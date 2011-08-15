@@ -7,15 +7,10 @@ class Sleepnow < Formula
   md5 'a9555e48d9719868dd9ec7ce1423861b'
 
   def install
-    Dir.chdir('Source') do
-      # Remove unneeded SDK reference
-      inreplace "SleepNow.xcodeproj/project.pbxproj", /SDKROOT.*$/, ''
+    # Build binary
+    system ENV['CC'], "-framework", "IOKit", "-o", "sleepnow", "Source/main.c"
 
-      # Build binary
-      system "xcodebuild", "-target", "SleepNow", "-configuration", "Release", "ONLY_ACTIVE_ARCH=YES", "SYMROOT=build"
-
-      # Install binary and rename to lowercase
-      bin.install 'build/Release/SleepNow' => 'sleepnow'
-    end
+    # Install binary
+    bin.install 'sleepnow'
   end
 end
